@@ -3,7 +3,35 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginTop="8dp">
+
+    <EditText
+        android:id="@+id/etSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_gray"
+        android:drawableStart="@drawable/baseline_search_24"
+        android:drawablePadding="4dp"
+        android:hint="Search"
+        android:minHeight="48dp"
+        android:padding="8dp"
+        android:paddingVertical="2dp"
+        android:textColorHint="@color/secondary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etSearch"
+        tools:itemCount="2"
+        tools:listitem="@layout/item_game" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
