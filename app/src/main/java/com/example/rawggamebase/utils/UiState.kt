@@ -1,4 +1,4 @@
-package com.example.rawggamebase.features.main.model
+package com.example.rawggamebase.utils
 
 sealed interface UiState<out T : Any> {
     object Loading : UiState<Nothing>

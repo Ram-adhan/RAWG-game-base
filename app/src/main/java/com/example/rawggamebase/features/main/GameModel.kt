@@ -1,4 +1,4 @@
-package com.example.rawggamebase.features.main.model
+package com.example.rawggamebase.features.main
 
 import com.example.rawggamebase.data.dto.Game
 
@@ -15,5 +15,5 @@ fun Game.toGameModel() = GameModel(
     title = this.name,
     releaseDate = this.released.toString(),
     rating = this.rating.toString(),
-    imageLink = this.backgroundImage
+    imageLink = this.backgroundImage ?: ""
 )

@@ -2,6 +2,7 @@ package com.example.rawggamebase.data.services
 
 import com.example.rawggamebase.data.dto.BaseResponse
 import com.example.rawggamebase.data.dto.Game
+import com.example.rawggamebase.data.dto.GameDetail
 import com.example.rawggamebase.utils.Config
 import retrofit2.Call
 import retrofit2.http.GET
@@ -17,4 +18,10 @@ interface GamesApi {
         @Query("search") keyword: String,
         @Query("key") apiKey: String = Config.API_KEY
     ): Call<BaseResponse<List<Game>>>
+
+    @GET("games/{id}")
+    fun getDetail(
+        @Path("id") id: Int,
+        @Query("key") apiKey: String = Config.API_KEY
+    ): Call<GameDetail>
 }

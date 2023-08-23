@@ -7,9 +7,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.rawggamebase.databinding.ItemGameBinding
-import com.example.rawggamebase.features.main.model.GameModel
 
-class GameListAdapter :
+class GameListAdapter(val onItemClick: (GameModel) -> Unit) :
     ListAdapter<GameModel, GameListAdapter.ItemGameHolder>(GameModelDiffUtil()) {
 
     class GameModelDiffUtil : DiffUtil.ItemCallback<GameModel>() {
@@ -43,6 +42,10 @@ class GameListAdapter :
                 tvTitle.text = item.title
                 tvReleaseDate.text = item.releaseDate
                 tvRating.text = item.rating
+            }
+
+            binding.root.setOnClickListener {
+                onItemClick.invoke(item)
             }
         }
     }

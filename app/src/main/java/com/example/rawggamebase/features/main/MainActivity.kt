@@ -5,25 +5,20 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.withStarted
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rawggamebase.databinding.ActivityMainBinding
-import com.example.rawggamebase.features.main.model.UiState
+import com.example.rawggamebase.features.detail.GameDetailActivity
+import com.example.rawggamebase.utils.UiState
 import com.example.rawggamebase.utils.LoadingHandler
 import com.example.rawggamebase.utils.LoadingHandlerImpl
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), LoadingHandler by LoadingHandlerImpl() {
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels { MainViewModel.Factory }
-    private val gameListAdapter: GameListAdapter by lazy { GameListAdapter() }
+    private val gameListAdapter: GameListAdapter by lazy { GameListAdapter(onItemClick = this::onItemClick) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -46,7 +41,10 @@ class MainActivity : AppCompatActivity(), LoadingHandler by LoadingHandlerImpl()
         }
 
         initializeLoadingDialog(this)
+    }
 
+    private fun onItemClick(gameModel: GameModel) {
+        GameDetailActivity.startActivity(this, gameModel.id)
     }
 
     private fun observerGameList() {
