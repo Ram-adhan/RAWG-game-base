@@ -13,7 +13,7 @@ data class GameModel(
 fun Game.toGameModel() = GameModel(
     id = this.id,
     title = this.name,
-    releaseDate = this.released,
+    releaseDate = this.released.toString(),
     rating = this.rating.toString(),
     imageLink = this.backgroundImage
 )

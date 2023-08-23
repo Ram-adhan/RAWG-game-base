@@ -1,5 +1,6 @@
 package com.example.rawggamebase.features.main
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -13,7 +14,9 @@ import com.example.rawggamebase.features.main.model.GameModel
 import com.example.rawggamebase.features.main.model.UiState
 import com.example.rawggamebase.features.main.model.toGameModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -32,9 +35,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class MainViewModel(
-    gameRepository: GameRepository,
-    ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
-    defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
+    private val gameRepository: GameRepository,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
 ) : ViewModel() {
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
@@ -55,24 +58,40 @@ class MainViewModel(
                 initialValue = UiState.Init
             )
 
+    private var searchJob: Job? = null
+
     init {
         viewModelScope.launch {
             _gameList.value = UiState.Loading
-            gameRepository.getGames()
-                .flowOn(ioDispatcher)
-                .collectLatest {
-                    when (it) {
-                        is Result.Success -> {
-                            _gameList.value =
-                                UiState.Success(it.data.map { game -> game.toGameModel() })
-                        }
+            getGames("")
+        }
+    }
 
-                        is Result.Error -> {
-                            _gameList.value = UiState.Error(it.error.message ?: "General Error")
-                        }
-                    }
-                }
+    fun searchGames(keyword: String) {
+        searchJob?.cancel()
+        searchJob = null
+
+        searchJob = viewModelScope.launch {
+            delay(500)
+            getGames(keyword)
         }
 
+        searchJob?.start()
+    }
+
+    private suspend fun getGames(keyword: String) {
+        gameRepository.getGames(keyword)
+            .flowOn(ioDispatcher)
+            .collectLatest {
+                when (it) {
+                    is Result.Success -> {
+                        _gameList.emit(UiState.Success(it.data.map { game -> game.toGameModel() }))
+                    }
+
+                    is Result.Error -> {
+                        _gameList.emit(UiState.Error(it.error.message ?: "General Error"))
+                    }
+                }
+            }
     }
 }

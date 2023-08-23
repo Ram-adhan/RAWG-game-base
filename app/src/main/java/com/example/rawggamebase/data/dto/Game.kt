@@ -15,7 +15,7 @@ data class Game(
     val ratingTop: Double = 0.0,
     @SerializedName("rating_count")
     val ratingsCount: Int = 0,
-    val released: String = "",
+    val released: String? = "",
     @SerializedName("reviews_text_count")
     val reviewsTextCount: String = "",
     val slug: String = "",

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -38,6 +39,10 @@ class MainActivity : AppCompatActivity(), LoadingHandler by LoadingHandlerImpl()
         binding.rvGames.apply {
             adapter = gameListAdapter
             layoutManager = LinearLayoutManager(this@MainActivity)
+        }
+
+        binding.etSearch.doAfterTextChanged {
+            viewModel.searchGames(it.toString())
         }
 
         initializeLoadingDialog(this)
