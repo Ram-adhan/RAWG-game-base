@@ -15,10 +15,19 @@ interface LoadingHandler {
     fun showProgress()
     fun dismissProgress()
     fun setProgressVisibility(isVisible: Boolean)
+
+    fun stackProgress(isAdd: Boolean = true) {
+
+    }
 }
 
 class LoadingHandlerImpl : LoadingHandler, LifecycleEventObserver {
     private var loadingDialog: Dialog? = null
+    private var progressStack: Int = 0
+        set(value) {
+            field = value
+            if (value > 0) showProgress() else dismissProgress()
+        }
 
     override fun initializeLoadingDialog(context: AppCompatActivity) {
         loadingDialog = Dialog(context)
@@ -43,6 +52,15 @@ class LoadingHandlerImpl : LoadingHandler, LifecycleEventObserver {
             showProgress()
         } else {
             dismissProgress()
+        }
+    }
+
+    override fun stackProgress(isAdd: Boolean) {
+        if (isAdd) progressStack++ else {
+            progressStack--
+            if (!progressStack.isPositiveNumber) {
+                progressStack = 0
+            }
         }
     }
 

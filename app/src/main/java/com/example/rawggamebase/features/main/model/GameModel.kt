@@ -1,4 +1,4 @@
-package com.example.rawggamebase.features.main
+package com.example.rawggamebase.features.main.model
 
 data class GameModel(
     val id: Int,
