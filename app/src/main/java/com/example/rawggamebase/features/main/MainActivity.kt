@@ -4,12 +4,15 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.doAfterTextChanged
+import androidx.core.view.isVisible
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rawggamebase.databinding.ActivityMainBinding
+import com.example.rawggamebase.features.adapters.GameListAdapter
 import com.example.rawggamebase.features.detail.GameDetailActivity
+import com.example.rawggamebase.features.list.GameListActivity
+import com.example.rawggamebase.features.model.GameModel
 import com.example.rawggamebase.utils.UiState
 import com.example.rawggamebase.utils.LoadingHandler
 import com.example.rawggamebase.utils.LoadingHandlerImpl
@@ -32,19 +35,23 @@ class MainActivity : AppCompatActivity(), LoadingHandler by LoadingHandlerImpl()
         supportActionBar?.title = "Games For You"
 
         binding.rvGames.apply {
-            adapter = gameListAdapter
+            adapter = gameListAdapter.apply {
+                onViewMore = this@MainActivity::onViewMoreClick
+            }
             layoutManager = LinearLayoutManager(this@MainActivity)
         }
 
-        binding.etSearch.doAfterTextChanged {
-            viewModel.searchGames(it.toString())
-        }
+        binding.etSearch.isVisible = false
 
         initializeLoadingDialog(this)
     }
 
     private fun onItemClick(gameModel: GameModel) {
-        GameDetailActivity.startActivity(this, gameModel.id)
+        startActivity(GameDetailActivity.newIntent(this, gameModel.id))
+    }
+
+    private fun onViewMoreClick() {
+        startActivity(GameListActivity.newIntent(this))
     }
 
     private fun observerGameList() {

@@ -1,13 +1,14 @@
-package com.example.rawggamebase.features.main
+package com.example.rawggamebase.features.model
 
 import com.example.rawggamebase.data.dto.Game
 
 data class GameModel(
-    val id: Int,
-    val title: String,
-    val releaseDate: String,
-    val rating: String,
-    val imageLink: String,
+    val id: Int = -1,
+    val title: String = "",
+    val releaseDate: String = "",
+    val rating: String = "",
+    val imageLink: String = "",
+    val viewType: Int = 0,
 )
 
 fun Game.toGameModel() = GameModel(

@@ -39,13 +39,9 @@ class GameDetailViewModel(
 
     fun getGameDetail(id: Int) = flow<UiState<GameDetailModel>> {
         emit(UiState.Loading)
-        gameRepository.getGameDetail(id)
-            .flowOn(ioDispatcher)
-            .collect {
-                when (it) {
-                    is Result.Success -> emit(UiState.Success(it.data.toGameDetailModel()))
-                    is Result.Error -> emit(UiState.Error(it.error.message ?: "General Error"))
-                }
-            }
+        when (val result = gameRepository.getGameDetail(id)) {
+            is Result.Success -> emit(UiState.Success(result.data.toGameDetailModel()))
+            is Result.Error -> emit(UiState.Error(result.error.message ?: "General Error"))
+        }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UiState.Init)
 }

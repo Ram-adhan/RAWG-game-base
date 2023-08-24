@@ -20,12 +20,10 @@ import kotlinx.coroutines.launch
 class GameDetailActivity : AppCompatActivity(), LoadingHandler by LoadingHandlerImpl() {
     companion object {
         private const val ID_DATA = "idData"
-        fun startActivity(context: Context, id: Int) {
-            val intent = Intent(context, GameDetailActivity::class.java).apply {
+        fun newIntent(context: Context, id: Int) =
+            Intent(context, GameDetailActivity::class.java).apply {
                 putExtra(ID_DATA, id)
             }
-            context.startActivity(intent)
-        }
     }
 
     private lateinit var binding: ActivityDetailBinding

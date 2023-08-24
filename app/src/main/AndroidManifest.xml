@@ -28,6 +28,9 @@
         <activity
             android:name=".features.detail.GameDetailActivity"
             android:exported="false" />
+        <activity
+            android:name=".features.list.GameListActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
