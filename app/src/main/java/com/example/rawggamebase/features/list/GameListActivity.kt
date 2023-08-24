@@ -18,6 +18,7 @@ import com.example.rawggamebase.features.model.GameModel
 import com.example.rawggamebase.utils.LoadingHandler
 import com.example.rawggamebase.utils.LoadingHandlerImpl
 import com.example.rawggamebase.utils.UiState
+import com.example.rawggamebase.utils.setCustomToolbar
 import kotlinx.coroutines.launch
 
 class GameListActivity : AppCompatActivity(), LoadingHandler by LoadingHandlerImpl() {
@@ -35,15 +36,20 @@ class GameListActivity : AppCompatActivity(), LoadingHandler by LoadingHandlerIm
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportActionBar?.title = "RAWG Game Database"
-
+        setCustomToolbar(binding.customToolbar, showNavigateUp = true, showAction = false)
         observeData()
         initView()
         initializeLoadingDialog(this)
         viewModel.searchGames("")
     }
 
+    override fun onNavigateUp(): Boolean {
+        onBackPressedDispatcher.onBackPressed()
+        return super.onNavigateUp()
+    }
+
     private fun initView() {
+        binding.customToolbar.title.text = "RAWG Game Database"
         binding.rvGames.apply {
             adapter = gameAdapter
             val llManager = LinearLayoutManager(this@GameListActivity)

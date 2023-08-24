@@ -3,18 +3,25 @@ package com.example.rawggamebase.features.detail
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.rawggamebase.R
 import com.example.rawggamebase.databinding.ActivityDetailBinding
+import com.example.rawggamebase.databinding.CustomActionBarBinding
 import com.example.rawggamebase.utils.LoadingHandler
 import com.example.rawggamebase.utils.LoadingHandlerImpl
 import com.example.rawggamebase.utils.UiState
 import com.example.rawggamebase.utils.isPositiveNumber
+import com.example.rawggamebase.utils.setCustomToolbar
 import kotlinx.coroutines.launch
 
 class GameDetailActivity : AppCompatActivity(), LoadingHandler by LoadingHandlerImpl() {
@@ -37,6 +44,12 @@ class GameDetailActivity : AppCompatActivity(), LoadingHandler by LoadingHandler
 
         initializeLoadingDialog(this)
         collectData()
+        setCustomToolbar(binding.customToolbar, showNavigateUp = true, showAction = true)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressedDispatcher.onBackPressed()
+        return super.onSupportNavigateUp()
     }
 
     private fun collectData() {
@@ -69,6 +82,7 @@ class GameDetailActivity : AppCompatActivity(), LoadingHandler by LoadingHandler
             .load(data.coverImage)
             .into(binding.ivCoverImage)
 
+        binding.customToolbar.title.text = data.title
         with(binding) {
             tvGameStudio.text = data.developer
             tvTitle.text = data.title

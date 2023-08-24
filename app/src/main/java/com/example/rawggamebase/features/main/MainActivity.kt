@@ -16,6 +16,7 @@ import com.example.rawggamebase.features.model.GameModel
 import com.example.rawggamebase.utils.UiState
 import com.example.rawggamebase.utils.LoadingHandler
 import com.example.rawggamebase.utils.LoadingHandlerImpl
+import com.example.rawggamebase.utils.setCustomToolbar
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), LoadingHandler by LoadingHandlerImpl() {
@@ -28,12 +29,12 @@ class MainActivity : AppCompatActivity(), LoadingHandler by LoadingHandlerImpl()
         setContentView(binding.root)
 
         observerGameList()
+        setCustomToolbar(binding.customToolbar, showNavigateUp = false, showAction = false)
         initView()
     }
 
     private fun initView() {
-        supportActionBar?.title = "Games For You"
-
+        binding.customToolbar.title.text = "Games For You"
         binding.rvGames.apply {
             adapter = gameListAdapter.apply {
                 onViewMore = this@MainActivity::onViewMoreClick
