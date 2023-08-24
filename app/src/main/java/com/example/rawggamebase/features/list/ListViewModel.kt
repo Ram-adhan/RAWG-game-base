@@ -41,9 +41,8 @@ class ListViewModel(
 
     private var currentKeyword: String = ""
     private var currentPage: Int = 1
-
+    private var canGoNext: Boolean = true
     private var searchJob: Job? = null
-
 
     fun searchGames(keyword: String) {
         searchJob?.cancel()
@@ -61,7 +60,7 @@ class ListViewModel(
     }
 
     fun onScrollPage() {
-        if (_gameList.value is UiState.Loading) return
+        if (_gameList.value is UiState.Loading || !canGoNext) return
         currentPage++
         viewModelScope.launch(ioDispatcher) {
             _gameList.emit(UiState.Loading)
@@ -71,19 +70,19 @@ class ListViewModel(
 
     private suspend fun getGames(keyword: String, page: Int? = null) {
         val searchKeyword = keyword.ifBlank { null }
+        if (page == null || page < 2) {
+            cachedGame.clear()
+            _gameList.emit(
+                UiState.Success(cachedGame.toList())
+            )
+        }
         when (val result = gameRepository.getGames(searchKeyword, page)) {
             is Result.Success -> {
-                if (page == null || page < 2) {
-                    cachedGame.clear()
-                    _gameList.emit(
-                        UiState.Success(cachedGame.toList())
-                    )
-                }
+                canGoNext = result.isNextPageAvailable
                 val newData = result.data.map { it.toGameModel() }
                 cachedGame.addAll(newData)
-                cachedGame = cachedGame.map { it.copy() }.toMutableList()
                 _gameList.emit(
-                    UiState.Success(cachedGame.toList())
+                    UiState.Success(cachedGame.map { it.copy() }.toList())
                 )
             }
             is Result.Error -> {

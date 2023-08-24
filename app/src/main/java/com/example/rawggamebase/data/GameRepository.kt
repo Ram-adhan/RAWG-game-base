@@ -17,7 +17,8 @@ class GameRepository(private val api: GamesApi) {
             val result = api.getGames(searchKey, page, pageSize)
 
             if (result.isSuccessful && result.body() != null) {
-                Result.Success(data = result.body()!!.results)
+                val hasNextPage = result.body()?.next != null
+                Result.Success(data = result.body()!!.results, isNextPageAvailable = hasNextPage)
             } else {
                 Result.Error(NetworkClient.processError(result))
             }
