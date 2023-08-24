@@ -51,8 +51,12 @@ class ListViewModel(
         currentKeyword = keyword
 
         currentPage = 1
+        cachedGame.clear()
         searchJob = viewModelScope.launch(ioDispatcher) {
             delay(500)
+            _gameList.emit(
+                UiState.Success(cachedGame.toList())
+            )
             getGames(currentKeyword, currentPage)
         }
 
@@ -70,12 +74,6 @@ class ListViewModel(
 
     private suspend fun getGames(keyword: String, page: Int? = null) {
         val searchKeyword = keyword.ifBlank { null }
-        if (page == null || page < 2) {
-            cachedGame.clear()
-            _gameList.emit(
-                UiState.Success(cachedGame.toList())
-            )
-        }
         when (val result = gameRepository.getGames(searchKeyword, page)) {
             is Result.Success -> {
                 canGoNext = result.isNextPageAvailable
