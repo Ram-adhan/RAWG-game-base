@@ -51,12 +51,8 @@ class ListViewModel(
         currentKeyword = keyword
 
         currentPage = 1
-        cachedGame.clear()
         searchJob = viewModelScope.launch(ioDispatcher) {
             delay(500)
-            _gameList.emit(
-                UiState.Success(cachedGame.toList())
-            )
             getGames(currentKeyword, currentPage)
         }
 
@@ -77,6 +73,12 @@ class ListViewModel(
         when (val result = gameRepository.getGames(searchKeyword, page)) {
             is Result.Success -> {
                 canGoNext = result.isNextPageAvailable
+                if (page == null || page < 2) {
+                    cachedGame.clear()
+                    _gameList.emit(
+                        UiState.Success(cachedGame.toList())
+                    )
+                }
                 val newData = result.data.map { it.toGameModel() }
                 cachedGame.addAll(newData)
                 _gameList.emit(
