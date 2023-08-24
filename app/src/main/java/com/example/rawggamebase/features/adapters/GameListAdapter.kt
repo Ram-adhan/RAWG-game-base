@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.rawggamebase.R
 import com.example.rawggamebase.databinding.ItemGameBinding
 import com.example.rawggamebase.databinding.ItemViewMoreBinding
 import com.example.rawggamebase.features.model.GameModel
@@ -64,7 +65,8 @@ class GameListAdapter(
 
             with(binding) {
                 tvTitle.text = item.title
-                tvReleaseDate.text = item.releaseDate
+                tvReleaseDate.text =
+                    root.context.getString(R.string.release_date_template, item.releaseDate)
                 tvRating.text = item.rating
             }
 

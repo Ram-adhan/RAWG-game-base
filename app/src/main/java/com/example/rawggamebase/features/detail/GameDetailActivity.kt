@@ -9,12 +9,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.example.rawggamebase.R
 import com.example.rawggamebase.databinding.ActivityDetailBinding
 import com.example.rawggamebase.utils.LoadingHandler
 import com.example.rawggamebase.utils.LoadingHandlerImpl
 import com.example.rawggamebase.utils.UiState
 import com.example.rawggamebase.utils.isPositiveNumber
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class GameDetailActivity : AppCompatActivity(), LoadingHandler by LoadingHandlerImpl() {
@@ -73,8 +73,8 @@ class GameDetailActivity : AppCompatActivity(), LoadingHandler by LoadingHandler
             tvGameStudio.text = data.developer
             tvTitle.text = data.title
             tvRating.text = data.rating
-            tvTotalPlayed.text = data.totalPlayed
-            tvReleaseDate.text = data.releaseDate
+            tvTotalPlayed.text = getString(R.string.player_count, data.totalPlayed)
+            tvReleaseDate.text = getString(R.string.release_date_template, data.releaseDate)
             tvDescription.text = data.description
         }
     }
