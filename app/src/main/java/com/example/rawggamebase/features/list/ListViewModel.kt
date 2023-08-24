@@ -10,6 +10,7 @@ import com.example.rawggamebase.BaseApplication
 import com.example.rawggamebase.data.GameRepository
 import com.example.rawggamebase.data.dto.Result
 import com.example.rawggamebase.features.model.GameModel
+import com.example.rawggamebase.features.model.toGameModel
 import com.example.rawggamebase.utils.UiState
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -27,17 +28,19 @@ class ListViewModel(
         }
     }
 
+    private var cachedGame = mutableListOf<GameModel>()
     private var _gameList: MutableStateFlow<UiState<List<GameModel>>> =
-        MutableStateFlow(UiState.Init)
+        MutableStateFlow(UiState.Loading)
     val gameList: StateFlow<UiState<List<GameModel>>> =
         _gameList
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
-                initialValue = UiState.Init
+                initialValue = UiState.Loading
             )
 
     private var currentKeyword: String = ""
+    private var currentPage: Int = 1
 
     private var searchJob: Job? = null
 
@@ -48,24 +51,45 @@ class ListViewModel(
 
         currentKeyword = keyword
 
-        searchJob = viewModelScope.launch {
+        currentPage = 1
+        searchJob = viewModelScope.launch(ioDispatcher) {
             delay(500)
-            getGames(currentKeyword)
+            getGames(currentKeyword, currentPage)
         }
 
         searchJob?.start()
     }
 
+    fun onScrollPage() {
+        if (_gameList.value is UiState.Loading) return
+        currentPage++
+        viewModelScope.launch(ioDispatcher) {
+            _gameList.emit(UiState.Loading)
+            getGames(currentKeyword, currentPage)
+        }
+    }
+
     private suspend fun getGames(keyword: String, page: Int? = null) {
         val searchKeyword = keyword.ifBlank { null }
-        /*when(val result = gameRepository.getGames(searchKeyword, page)) {
-            is Result.Success ->
-        }
-            .collect {
-                when (it) {
-
+        when (val result = gameRepository.getGames(searchKeyword, page)) {
+            is Result.Success -> {
+                if (page == null || page < 2) {
+                    cachedGame.clear()
+                    _gameList.emit(
+                        UiState.Success(cachedGame.toList())
+                    )
                 }
-            }*/
+                val newData = result.data.map { it.toGameModel() }
+                cachedGame.addAll(newData)
+                cachedGame = cachedGame.map { it.copy() }.toMutableList()
+                _gameList.emit(
+                    UiState.Success(cachedGame.toList())
+                )
+            }
+            is Result.Error -> {
+                _gameList.emit(UiState.Error(result.error.message ?: ""))
+            }
+        }
     }
 
 }

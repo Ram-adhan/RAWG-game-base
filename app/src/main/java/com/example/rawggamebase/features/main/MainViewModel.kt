@@ -48,10 +48,8 @@ class MainViewModel(
                 initialValue = UiState.Init
             )
 
-    private var searchJob: Job? = null
-
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             _gameList.value = UiState.Loading
             getGames()
         }
