@@ -40,7 +40,8 @@ class ListViewModel(
             )
 
     private var currentKeyword: String = ""
-    private var currentPage: Int = 1
+    private var _currentPage: Int = 1
+    val currentPage get() = _currentPage
     private var canGoNext: Boolean = true
     private var searchJob: Job? = null
 
@@ -50,10 +51,10 @@ class ListViewModel(
 
         currentKeyword = keyword
 
-        currentPage = 1
+        _currentPage = 1
         searchJob = viewModelScope.launch(ioDispatcher) {
             delay(500)
-            getGames(currentKeyword, currentPage)
+            getGames(currentKeyword, _currentPage)
         }
 
         searchJob?.start()
@@ -61,10 +62,10 @@ class ListViewModel(
 
     fun onScrollPage() {
         if (_gameList.value is UiState.Loading || !canGoNext) return
-        currentPage++
+        _currentPage++
         viewModelScope.launch(ioDispatcher) {
             _gameList.emit(UiState.Loading)
-            getGames(currentKeyword, currentPage)
+            getGames(currentKeyword, _currentPage)
         }
     }
 
@@ -86,9 +87,9 @@ class ListViewModel(
                 )
             }
             is Result.Error -> {
-                currentPage--
-                if (currentPage < 1)
-                    currentPage = 1
+                _currentPage--
+                if (_currentPage < 1)
+                    _currentPage = 1
                 _gameList.emit(UiState.Error(result.error.message ?: ""))
             }
         }
