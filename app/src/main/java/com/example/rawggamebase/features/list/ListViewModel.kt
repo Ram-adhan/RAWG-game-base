@@ -87,8 +87,8 @@ class ListViewModel(
             }
             is Result.Error -> {
                 currentPage--
-                if (currentPage < 0)
-                    currentPage = 0
+                if (currentPage < 1)
+                    currentPage = 1
                 _gameList.emit(UiState.Error(result.error.message ?: ""))
             }
         }
