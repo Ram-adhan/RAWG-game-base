@@ -11,6 +11,7 @@ import com.example.rawggamebase.utils.UiState
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.take
@@ -20,7 +21,9 @@ import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import org.junit.Assert.*
 
 import org.junit.After
@@ -42,12 +45,15 @@ class MainViewModelTest {
 
     @Before
     fun setUp() {
+        Dispatchers.setMain(dispatcher)
         viewModel = MainViewModel(gameRepo, dispatcher)
         uiState = mutableListOf()
     }
 
     @After
     fun tearDown() {
+        Dispatchers.resetMain()
+        uiState.clear()
     }
 
     @Test
@@ -75,7 +81,10 @@ class MainViewModelTest {
         )
         coEvery {
             gameRepo.getGames(searchKey = any(), page = any())
-        } returns Result.Success(data = returnedList)
+        } coAnswers {
+            delay(100)
+            Result.Success(data = returnedList)
+        }
 
         val job = launch(dispatcher) {
             viewModel
@@ -90,6 +99,8 @@ class MainViewModelTest {
         coVerify {
             gameRepo.getGames(null, null)
         }
+        assertEquals(UiState.Init, uiState.first())
+        assertEquals(UiState.Loading, uiState[1])
         assertEquals(UiState.Success(uiData), uiState.last())
     }
 }
