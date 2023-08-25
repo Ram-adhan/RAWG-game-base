@@ -1,6 +1,8 @@
 package com.example.rawggamebase.data
 
 import com.example.rawggamebase.BuildConfig
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
@@ -34,10 +36,15 @@ class NetworkClient {
         }
 
         fun <T : Any> processError(response: Response<T>): Throwable {
-            return if (response.body() == null) {
-                Throwable("Null Data")
+            val body = response.errorBody()?.string()
+            return if (body.isNullOrBlank()) {
+                Throwable("Unknown Error")
             } else {
-                Throwable(response.errorBody()?.string())
+                val typeToken = object : TypeToken<Map<String, String>>() {}.type
+                val mapper = Gson().fromJson<Map<String, String>>(body, typeToken)
+                mapper.keys.firstOrNull()?.let { key ->
+                    Throwable("$key : ${mapper[key]}")
+                } ?: Throwable("Unknown Error")
             }
         }
     }
