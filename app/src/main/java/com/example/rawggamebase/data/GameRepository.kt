@@ -8,13 +8,15 @@ import kotlinx.coroutines.flow.flow
 
 class GameRepository(private val api: GamesApi) {
 
+    companion object {
+        private const val PAGE_SIZE = 20
+    }
     suspend fun getGames(
-        searchKey: String? = null,
-        page: Int? = null,
-        pageSize: Int = 20
+        searchKey: String?,
+        page: Int?
     ): Result<List<Game>> {
         return try {
-            val result = api.getGames(searchKey, page, pageSize)
+            val result = api.getGames(searchKey, page, PAGE_SIZE)
 
             if (result.isSuccessful && result.body() != null) {
                 val hasNextPage = result.body()?.next != null

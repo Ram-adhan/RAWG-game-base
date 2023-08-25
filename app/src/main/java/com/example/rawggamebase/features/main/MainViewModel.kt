@@ -56,7 +56,7 @@ class MainViewModel(
     }
 
     private suspend fun getGames() {
-        when (val result = gameRepository.getGames()) {
+        when (val result = gameRepository.getGames(searchKey = null, page = null)) {
             is Result.Success -> {
                 val data = result.data
                     .map { game -> game.toGameModel() }

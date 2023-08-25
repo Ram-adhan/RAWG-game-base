@@ -30,13 +30,13 @@ class ListViewModel(
 
     private var cachedGame = mutableListOf<GameModel>()
     private var _gameList: MutableStateFlow<UiState<List<GameModel>>> =
-        MutableStateFlow(UiState.Loading)
+        MutableStateFlow(UiState.Init)
     val gameList: StateFlow<UiState<List<GameModel>>> =
         _gameList
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
-                initialValue = UiState.Loading
+                initialValue = UiState.Init
             )
 
     private var currentKeyword: String = ""

@@ -54,9 +54,9 @@ class GameListActivity : AppCompatActivity(), LoadingHandler by LoadingHandlerIm
             adapter = gameAdapter
             val llManager = LinearLayoutManager(this@GameListActivity)
             layoutManager = llManager
-            var visibleItemCount = 0
-            var totalItemCount = 0
-            var pastItemVisible = 0
+            var visibleItemCount: Int
+            var totalItemCount: Int
+            var pastItemVisible: Int
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     visibleItemCount = llManager.childCount
@@ -86,7 +86,7 @@ class GameListActivity : AppCompatActivity(), LoadingHandler by LoadingHandlerIm
             viewModel.gameList
                 .flowWithLifecycle(lifecycle)
                 .collect { state ->
-                    setProgressVisibility(state is UiState.Loading)
+                    setProgressVisibility(state is UiState.Loading || state is UiState.Init)
                     readyToLoad = state !is UiState.Loading
                     when (state) {
                         is UiState.Success -> {
