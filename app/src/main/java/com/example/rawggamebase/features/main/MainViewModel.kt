@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -38,37 +39,30 @@ class MainViewModel(
         }
     }
 
-    private var _gameList: MutableStateFlow<UiState<List<GameModel>>> =
-        MutableStateFlow(UiState.Init)
-    val gameList: StateFlow<UiState<List<GameModel>>> =
-        _gameList
+    val gameList: StateFlow<UiState<List<GameModel>>> by lazy {
+        flow<UiState<List<GameModel>>> {
+            emit(UiState.Loading)
+            when (val result = gameRepository.getGames(searchKey = null, page = null)) {
+                is Result.Success -> {
+                    val data = result.data
+                        .map { game -> game.toGameModel() }
+                        .toMutableList().apply {
+                            add(GameModel(viewType = GameListAdapter.VIEW_MORE))
+                        }
+
+                    emit(UiState.Success(data))
+                }
+
+                is Result.Error -> {
+                    emit(UiState.Error(result.error.message ?: "General Error"))
+                }
+            }
+        }
+            .flowOn(ioDispatcher)
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
                 initialValue = UiState.Init
             )
-
-    init {
-        viewModelScope.launch(ioDispatcher) {
-            _gameList.value = UiState.Loading
-            getGames()
-        }
-    }
-
-    private suspend fun getGames() {
-        when (val result = gameRepository.getGames(searchKey = null, page = null)) {
-            is Result.Success -> {
-                val data = result.data
-                    .map { game -> game.toGameModel() }
-                    .toMutableList().apply {
-                        add(GameModel(viewType = GameListAdapter.VIEW_MORE))
-                    }
-
-                _gameList.emit(UiState.Success(data))
-            }
-            is Result.Error -> {
-                _gameList.emit(UiState.Error(result.error.message ?: "General Error"))
-            }
-        }
     }
 }

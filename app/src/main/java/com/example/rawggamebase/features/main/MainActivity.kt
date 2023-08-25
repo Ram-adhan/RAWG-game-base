@@ -28,9 +28,9 @@ class MainActivity : AppCompatActivity(), LoadingHandler by LoadingHandlerImpl()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        observerGameList()
         setCustomToolbar(binding.customToolbar, showNavigateUp = false, showAction = false)
         initView()
+        observerGameList()
     }
 
     private fun initView() {
