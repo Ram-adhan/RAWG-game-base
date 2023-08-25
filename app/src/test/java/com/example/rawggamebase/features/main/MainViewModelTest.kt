@@ -103,4 +103,32 @@ class MainViewModelTest {
         assertEquals(UiState.Loading, uiState[1])
         assertEquals(UiState.Success(uiData), uiState.last())
     }
+
+    @Test
+    fun `init and returning error`() = runTest {
+        val message = "error"
+        coEvery {
+            gameRepo.getGames(searchKey = any(), page = any())
+        } coAnswers {
+            delay(100)
+            Result.Error(Throwable(message))
+        }
+
+        val job = launch(dispatcher) {
+            viewModel
+                .gameList
+                .take(3)
+                .toList(uiState)
+        }
+
+        advanceUntilIdle()
+        job.cancel()
+
+        coVerify {
+            gameRepo.getGames(null, null)
+        }
+        assertEquals(UiState.Init, uiState.first())
+        assertEquals(UiState.Loading, uiState[1])
+        assertEquals(UiState.Error(message), uiState.last())
+    }
 }
