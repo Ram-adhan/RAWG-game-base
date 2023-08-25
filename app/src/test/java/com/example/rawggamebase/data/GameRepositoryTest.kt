@@ -56,7 +56,7 @@ class GameRepositoryTest {
     }
 
     @Test
-    fun `getGame return success with has next indicator true`() = runTest {
+    fun `getGame return success with has next indicator set to true`() = runTest {
         val listGame = listOf(Game())
         val response = BaseListResponse(
             next = "true",
