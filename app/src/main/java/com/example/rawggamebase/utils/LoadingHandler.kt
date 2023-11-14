@@ -56,9 +56,11 @@ class LoadingHandlerImpl : LoadingHandler, LifecycleEventObserver {
     }
 
     override fun stackProgress(isAdd: Boolean) {
-        if (isAdd) progressStack++ else {
+        if (isAdd) {
+            progressStack++
+        } else {
             progressStack--
-            if (!progressStack.isPositiveNumber) {
+            if (progressStack < 1) {
                 progressStack = 0
             }
         }

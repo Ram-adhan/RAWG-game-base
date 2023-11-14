@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.example.rawggamebase.BaseApplication
 import com.example.rawggamebase.R
 import com.example.rawggamebase.databinding.ActivityDetailBinding
 import com.example.rawggamebase.databinding.CustomActionBarBinding
@@ -24,7 +25,8 @@ import com.example.rawggamebase.utils.isPositiveNumber
 import com.example.rawggamebase.utils.setCustomToolbar
 import kotlinx.coroutines.launch
 
-class GameDetailActivity : AppCompatActivity(), LoadingHandler by LoadingHandlerImpl() {
+class GameDetailActivity : AppCompatActivity(), GameDetailView,
+    LoadingHandler by LoadingHandlerImpl() {
     companion object {
         private const val ID_DATA = "idData"
         fun newIntent(context: Context, id: Int) =
@@ -36,6 +38,7 @@ class GameDetailActivity : AppCompatActivity(), LoadingHandler by LoadingHandler
     private lateinit var binding: ActivityDetailBinding
     private val viewModel: GameDetailViewModel by viewModels { GameDetailViewModel.Factory }
     private val id: Int by lazy { intent.getIntExtra(ID_DATA, -1) }
+    private val presenter: GameDetailPresenter by lazy { GameDetailPresenter((application as BaseApplication).gameRepository) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,8 +46,10 @@ class GameDetailActivity : AppCompatActivity(), LoadingHandler by LoadingHandler
         setContentView(binding.root)
 
         initializeLoadingDialog(this)
-        collectData()
+//        collectData()
         setCustomToolbar(binding.customToolbar, showNavigateUp = true, showAction = true)
+        presenter.onAttach(this)
+        presenter.getGameDetail(id)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -91,5 +96,26 @@ class GameDetailActivity : AppCompatActivity(), LoadingHandler by LoadingHandler
             tvReleaseDate.text = getString(R.string.release_date_template, data.releaseDate)
             tvDescription.text = data.description
         }
+    }
+
+    override fun onProgress() {
+        stackProgress(true)
+    }
+
+    override fun onFinishProgress() {
+        stackProgress(false)
+    }
+
+    override fun onSuccessGetDetail(detail: GameDetailModel) {
+        bindData(detail)
+    }
+
+    override fun onError(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onDestroy() {
+        presenter.onDetach()
+        super.onDestroy()
     }
 }
