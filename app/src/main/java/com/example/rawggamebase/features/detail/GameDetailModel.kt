@@ -14,18 +14,18 @@ data class GameDetailModel(
     val description: String,
 )
 
-fun com.example.data.dto.GameDetail.toGameDetailModel() = GameDetailModel(
+fun GameDetail.toGameDetailModel() = GameDetailModel(
     id = this.id,
     title = this.name,
     coverImage = this.backgroundImage ?: "",
     developer = this.developers.firstOrNull()?.name ?: "",
     rating = this.rating.toString(),
     releaseDate = this.released ?: "",
-    totalPlayed = listOf<Int>(
+    totalPlayed = listOf(
         this.addedByStatus?.playing.filterInt,
         this.addedByStatus?.beaten.filterInt,
         this.addedByStatus?.toplay.filterInt,
         this.addedByStatus?.dropped.filterInt,
-    ).sumOf { it }.toString() ?: "",
+    ).sumOf { it }.toString(),
     description = this.descriptionRaw ?: ""
 )
