@@ -1,6 +1,5 @@
 package com.example.rawggamebase
 
-import com.example.data.data.GameRepositoryTest
 import com.example.rawggamebase.features.detail.GameDetailViewModelTest
 import com.example.rawggamebase.features.list.ListViewModelTest
 import com.example.rawggamebase.features.main.MainViewModelTest
@@ -12,6 +11,5 @@ import org.junit.runners.Suite
     MainViewModelTest::class,
     GameDetailViewModelTest::class,
     ListViewModelTest::class,
-    com.example.data.data.GameRepositoryTest::class
 )
 class SuiteTest
