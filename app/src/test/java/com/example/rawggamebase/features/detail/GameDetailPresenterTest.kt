@@ -1,10 +1,10 @@
 package com.example.rawggamebase.features.detail
 
-import com.example.rawggamebase.data.GameRepository
-import com.example.rawggamebase.data.dto.AddedByStatus
-import com.example.rawggamebase.data.dto.Developer
-import com.example.rawggamebase.data.dto.GameDetail
-import com.example.rawggamebase.data.dto.Result
+import com.example.data.GameRepository
+import com.example.data.dto.AddedByStatus
+import com.example.data.dto.Developer
+import com.example.data.dto.GameDetail
+import com.example.data.dto.Result
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.Dispatchers

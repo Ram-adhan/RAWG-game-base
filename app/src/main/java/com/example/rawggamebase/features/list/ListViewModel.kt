@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.rawggamebase.BaseApplication
-import com.example.rawggamebase.data.GameRepository
-import com.example.rawggamebase.data.dto.Result
+import com.example.data.GameRepository
+import com.example.data.dto.Result
 import com.example.rawggamebase.features.model.GameModel
 import com.example.rawggamebase.features.model.toGameModel
 import com.example.rawggamebase.utils.UiState
@@ -16,7 +16,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
 class ListViewModel(
-    private val gameRepository: GameRepository,
+    private val gameRepository: com.example.data.GameRepository,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ViewModel() {
     companion object {
@@ -72,7 +72,7 @@ class ListViewModel(
     private suspend fun getGames(keyword: String, page: Int? = null) {
         val searchKeyword = keyword.ifBlank { null }
         when (val result = gameRepository.getGames(searchKeyword, page)) {
-            is Result.Success -> {
+            is com.example.data.dto.Result.Success -> {
                 canGoNext = result.isNextPageAvailable
                 if (page == null || page < 2) {
                     cachedGame.clear()
@@ -86,7 +86,8 @@ class ListViewModel(
                     UiState.Success(cachedGame.map { it.copy() }.toList())
                 )
             }
-            is Result.Error -> {
+
+            is com.example.data.dto.Result.Error -> {
                 _currentPage--
                 if (_currentPage < 1)
                     _currentPage = 1

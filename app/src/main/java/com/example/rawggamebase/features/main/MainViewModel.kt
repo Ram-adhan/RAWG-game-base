@@ -7,27 +7,22 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.rawggamebase.BaseApplication
-import com.example.rawggamebase.data.GameRepository
-import com.example.rawggamebase.data.dto.Result
+import com.example.data.GameRepository
+import com.example.data.dto.Result
 import com.example.rawggamebase.features.adapters.GameListAdapter
 import com.example.rawggamebase.features.model.GameModel
 import com.example.rawggamebase.features.model.toGameModel
 import com.example.rawggamebase.utils.UiState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 
 class MainViewModel(
-    private val gameRepository: GameRepository,
+    private val gameRepository: com.example.data.GameRepository,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ViewModel() {
     companion object {
@@ -43,7 +38,7 @@ class MainViewModel(
         flow<UiState<List<GameModel>>> {
             emit(UiState.Loading)
             when (val result = gameRepository.getGames(searchKey = null, page = null)) {
-                is Result.Success -> {
+                is com.example.data.dto.Result.Success -> {
                     val data = result.data
                         .map { game -> game.toGameModel() }
                         .toMutableList().apply {
@@ -53,7 +48,7 @@ class MainViewModel(
                     emit(UiState.Success(data))
                 }
 
-                is Result.Error -> {
+                is com.example.data.dto.Result.Error -> {
                     emit(UiState.Error(result.error.message ?: "General Error"))
                 }
             }

@@ -1,6 +1,6 @@
 package com.example.rawggamebase.features.detail
 
-import com.example.rawggamebase.data.dto.GameDetail
+import com.example.data.dto.GameDetail
 import com.example.rawggamebase.utils.filterInt
 
 data class GameDetailModel(
@@ -13,7 +13,8 @@ data class GameDetailModel(
     val totalPlayed: String,
     val description: String,
 )
-fun GameDetail.toGameDetailModel() = GameDetailModel(
+
+fun com.example.data.dto.GameDetail.toGameDetailModel() = GameDetailModel(
     id = this.id,
     title = this.name,
     coverImage = this.backgroundImage ?: "",

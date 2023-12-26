@@ -1,9 +1,8 @@
 package com.example.rawggamebase
 
 import android.app.Application
-import com.example.rawggamebase.data.NetworkClient
-import com.example.rawggamebase.data.services.GamesApi
-import com.example.rawggamebase.utils.RepositoryModule
+import com.example.data.NetworkClient
+import com.example.data.RepositoryModule
 
 class BaseApplication : Application() {
     private lateinit var repositoryModule: RepositoryModule

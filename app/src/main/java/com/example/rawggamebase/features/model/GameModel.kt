@@ -1,6 +1,6 @@
 package com.example.rawggamebase.features.model
 
-import com.example.rawggamebase.data.dto.Game
+import com.example.data.dto.Game
 
 data class GameModel(
     val id: Int = -1,
@@ -11,7 +11,7 @@ data class GameModel(
     val viewType: Int = 0,
 )
 
-fun Game.toGameModel() = GameModel(
+fun com.example.data.dto.Game.toGameModel() = GameModel(
     id = this.id,
     title = this.name,
     releaseDate = this.released.toString(),

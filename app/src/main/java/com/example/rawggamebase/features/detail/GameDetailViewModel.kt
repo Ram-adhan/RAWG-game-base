@@ -6,24 +6,17 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.rawggamebase.BaseApplication
-import com.example.rawggamebase.data.GameRepository
-import com.example.rawggamebase.data.dto.Result
-import com.example.rawggamebase.features.main.MainViewModel
+import com.example.data.GameRepository
+import com.example.data.dto.Result
 import com.example.rawggamebase.utils.UiState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.stateIn
 
 class GameDetailViewModel(
-    private val gameRepository: GameRepository,
+    private val gameRepository: com.example.data.GameRepository,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
 ) : ViewModel() {
@@ -40,8 +33,12 @@ class GameDetailViewModel(
     fun getGameDetail(id: Int) = flow<UiState<GameDetailModel>> {
         emit(UiState.Loading)
         when (val result = gameRepository.getGameDetail(id)) {
-            is Result.Success -> emit(UiState.Success(result.data.toGameDetailModel()))
-            is Result.Error -> emit(UiState.Error(result.error.message ?: "General Error"))
+            is com.example.data.dto.Result.Success -> emit(UiState.Success(result.data.toGameDetailModel()))
+            is com.example.data.dto.Result.Error -> emit(
+                UiState.Error(
+                    result.error.message ?: "General Error"
+                )
+            )
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UiState.Init)
 }

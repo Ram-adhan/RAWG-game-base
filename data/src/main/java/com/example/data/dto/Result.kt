@@ -1,4 +1,4 @@
-package com.example.rawggamebase.data.dto
+package com.example.data.dto
 
 sealed interface Result<out T> {
     class Success<out T : Any>(val data: T, val isNextPageAvailable: Boolean = false) : Result<T>

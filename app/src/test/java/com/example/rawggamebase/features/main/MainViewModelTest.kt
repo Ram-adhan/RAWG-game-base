@@ -1,11 +1,10 @@
 package com.example.rawggamebase.features.main
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.rawggamebase.data.GameRepository
-import com.example.rawggamebase.data.dto.Game
-import com.example.rawggamebase.data.dto.Result
+import com.example.data.GameRepository
+import com.example.data.dto.Game
+import com.example.data.dto.Result
 import com.example.rawggamebase.features.adapters.GameListAdapter
-import com.example.rawggamebase.features.list.ListViewModel
 import com.example.rawggamebase.features.model.GameModel
 import com.example.rawggamebase.utils.UiState
 import io.mockk.coEvery
@@ -19,7 +18,6 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -36,7 +34,7 @@ import org.junit.rules.TestRule
 class MainViewModelTest {
 
     private lateinit var viewModel: MainViewModel
-    private val gameRepo: GameRepository = mockk(relaxed = true)
+    private val gameRepo: com.example.data.GameRepository = mockk(relaxed = true)
     private val dispatcher: TestDispatcher = UnconfinedTestDispatcher()
     private lateinit var uiState: MutableList<UiState<List<GameModel>>>
 
@@ -59,7 +57,7 @@ class MainViewModelTest {
     @Test
     fun `init and returning data`() = runTest {
         val returnedList = listOf(
-            Game(
+            com.example.data.dto.Game(
                 id = 1,
                 name = "Hello",
                 backgroundImage = "backgroundImage",
@@ -83,7 +81,7 @@ class MainViewModelTest {
             gameRepo.getGames(searchKey = any(), page = any())
         } coAnswers {
             delay(100)
-            Result.Success(data = returnedList)
+            com.example.data.dto.Result.Success(data = returnedList)
         }
 
         val job = launch(dispatcher) {
@@ -111,7 +109,7 @@ class MainViewModelTest {
             gameRepo.getGames(searchKey = any(), page = any())
         } coAnswers {
             delay(100)
-            Result.Error(Throwable(message))
+            com.example.data.dto.Result.Error(Throwable(message))
         }
 
         val job = launch(dispatcher) {

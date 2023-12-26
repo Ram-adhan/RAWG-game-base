@@ -1,9 +1,9 @@
 package com.example.rawggamebase.features.list
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.rawggamebase.data.GameRepository
-import com.example.rawggamebase.data.dto.Game
-import com.example.rawggamebase.data.dto.Result
+import com.example.data.GameRepository
+import com.example.data.dto.Game
+import com.example.data.dto.Result
 import com.example.rawggamebase.features.model.GameModel
 import com.example.rawggamebase.utils.UiState
 import io.mockk.coEvery
@@ -31,7 +31,7 @@ import org.junit.rules.TestRule
 class ListViewModelTest {
 
     private lateinit var viewModel: ListViewModel
-    private val gameRepo: GameRepository = mockk(relaxed = true)
+    private val gameRepo: com.example.data.GameRepository = mockk(relaxed = true)
     private val dispatcher: TestDispatcher = UnconfinedTestDispatcher()
     private lateinit var uiState: MutableList<UiState<List<GameModel>>>
 
@@ -55,7 +55,7 @@ class ListViewModelTest {
     fun `search game when success return list`() = runTest {
         val keyword = "Hello"
         val returnedList = listOf(
-            Game(
+            com.example.data.dto.Game(
                 id = 1,
                 name = "Hello",
                 backgroundImage = "backgroundImage",
@@ -74,7 +74,7 @@ class ListViewModelTest {
         )
         coEvery {
             gameRepo.getGames(searchKey = any(), page = any())
-        } returns Result.Success(data = returnedList)
+        } returns com.example.data.dto.Result.Success(data = returnedList)
 
         val job = launch {
             viewModel.gameList.toList(uiState)
@@ -95,7 +95,7 @@ class ListViewModelTest {
         val keyword = "Hello"
         coEvery {
             gameRepo.getGames(searchKey = any(), page = any())
-        } returns Result.Error(error = Throwable(message))
+        } returns com.example.data.dto.Result.Error(error = Throwable(message))
 
         val job = launch {
             viewModel.gameList.toList(uiState)
@@ -114,7 +114,7 @@ class ListViewModelTest {
     @Test
     fun `onScrollPage when success return list`() = runTest {
         val returnedList = listOf(
-            Game(
+            com.example.data.dto.Game(
                 id = 1,
                 name = "Hello",
                 backgroundImage = "backgroundImage",
@@ -136,7 +136,7 @@ class ListViewModelTest {
             gameRepo.getGames(searchKey = any(), page = any())
         } coAnswers {
             delay(100) // simulate delay for calling
-            Result.Success(data = returnedList)
+            com.example.data.dto.Result.Success(data = returnedList)
         }
 
         val job = launch {
@@ -163,7 +163,7 @@ class ListViewModelTest {
             gameRepo.getGames(searchKey = any(), page = any())
         } coAnswers {
             delay(100)
-            Result.Error(error = Throwable(message))
+            com.example.data.dto.Result.Error(error = Throwable(message))
         }
 
         val job = launch {

@@ -1,10 +1,9 @@
-package com.example.rawggamebase.data
+package com.example.data
 
-import com.example.rawggamebase.data.dto.Game
-import com.example.rawggamebase.data.dto.GameDetail
-import com.example.rawggamebase.data.dto.Result
-import com.example.rawggamebase.data.services.GamesApi
-import kotlinx.coroutines.flow.flow
+import com.example.data.dto.Game
+import com.example.data.dto.GameDetail
+import com.example.data.dto.Result
+import com.example.data.services.GamesApi
 
 class GameRepository(private val api: GamesApi) {
 

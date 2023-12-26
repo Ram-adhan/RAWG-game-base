@@ -1,17 +1,16 @@
 package com.example.rawggamebase.data
 
-import com.example.rawggamebase.data.dto.BaseListResponse
-import com.example.rawggamebase.data.dto.Game
-import com.example.rawggamebase.data.dto.GameDetail
-import com.example.rawggamebase.data.dto.Result
-import com.example.rawggamebase.data.services.GamesApi
+import com.example.data.dto.BaseListResponse
+import com.example.data.dto.Game
+import com.example.data.dto.GameDetail
+import com.example.data.dto.Result
+import com.example.data.services.GamesApi
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.*
 
@@ -23,12 +22,12 @@ import retrofit2.Response
 @OptIn(ExperimentalCoroutinesApi::class)
 class GameRepositoryTest {
 
-    private lateinit var gameRepository: GameRepository
-    private val gameApi: GamesApi = mockk()
+    private lateinit var gameRepository: com.example.data.GameRepository
+    private val gameApi: com.example.data.services.GamesApi = mockk()
 
     @Before
     fun setUp() {
-        gameRepository = GameRepository(gameApi)
+        gameRepository = com.example.data.GameRepository(gameApi)
     }
 
     @After
@@ -37,8 +36,8 @@ class GameRepositoryTest {
 
     @Test
     fun `getGame return success`() = runTest {
-        val listGame = listOf(Game())
-        val response = BaseListResponse(
+        val listGame = listOf(com.example.data.dto.Game())
+        val response = com.example.data.dto.BaseListResponse(
             results = listGame
         )
         coEvery {
@@ -51,14 +50,17 @@ class GameRepositoryTest {
             gameApi.getGames(null, null, 20)
         }
 
-        assert(result is Result.Success)
-        assertEquals(Result.Success(listGame).data, (result as Result.Success).data)
+        assert(result is com.example.data.dto.Result.Success)
+        assertEquals(
+            com.example.data.dto.Result.Success(listGame).data,
+            (result as com.example.data.dto.Result.Success).data
+        )
     }
 
     @Test
     fun `getGame return success with has next indicator set to true`() = runTest {
-        val listGame = listOf(Game())
-        val response = BaseListResponse(
+        val listGame = listOf(com.example.data.dto.Game())
+        val response = com.example.data.dto.BaseListResponse(
             next = "true",
             results = listGame
         )
@@ -72,8 +74,8 @@ class GameRepositoryTest {
             gameApi.getGames(null, null, 20)
         }
 
-        assert(result is Result.Success)
-        assertEquals(listGame, (result as Result.Success).data)
+        assert(result is com.example.data.dto.Result.Success)
+        assertEquals(listGame, (result as com.example.data.dto.Result.Success).data)
         assertEquals(true, result.isNextPageAvailable)
     }
 
@@ -92,8 +94,11 @@ class GameRepositoryTest {
             gameApi.getGames(null, null, 20)
         }
 
-        assert(result is Result.Error)
-        assertEquals("error : error message", (result as Result.Error).error.message)
+        assert(result is com.example.data.dto.Result.Error)
+        assertEquals(
+            "error : error message",
+            (result as com.example.data.dto.Result.Error).error.message
+        )
     }
 
     @Test
@@ -110,13 +115,13 @@ class GameRepositoryTest {
             gameApi.getGames(null, null, 20)
         }
 
-        assert(result is Result.Error)
-        assertEquals("error", (result as Result.Error).error.message)
+        assert(result is com.example.data.dto.Result.Error)
+        assertEquals("error", (result as com.example.data.dto.Result.Error).error.message)
     }
 
     @Test
     fun `getGameDetail return success`() = runTest {
-        val response = GameDetail(
+        val response = com.example.data.dto.GameDetail(
             id = 1
         )
         coEvery {
@@ -129,8 +134,11 @@ class GameRepositoryTest {
             gameApi.getDetail(1)
         }
 
-        assert(result is Result.Success)
-        assertEquals(Result.Success(GameDetail(id = 1)).data, (result as Result.Success).data)
+        assert(result is com.example.data.dto.Result.Success)
+        assertEquals(
+            com.example.data.dto.Result.Success(com.example.data.dto.GameDetail(id = 1)).data,
+            (result as com.example.data.dto.Result.Success).data
+        )
     }
 
     @Test
@@ -148,8 +156,11 @@ class GameRepositoryTest {
             gameApi.getDetail(1)
         }
 
-        assert(result is Result.Error)
-        assertEquals("error : error message", (result as Result.Error).error.message)
+        assert(result is com.example.data.dto.Result.Error)
+        assertEquals(
+            "error : error message",
+            (result as com.example.data.dto.Result.Error).error.message
+        )
     }
 
     @Test
@@ -166,7 +177,7 @@ class GameRepositoryTest {
             gameApi.getDetail(1)
         }
 
-        assert(result is Result.Error)
-        assertEquals("error", (result as Result.Error).error.message)
+        assert(result is com.example.data.dto.Result.Error)
+        assertEquals("error", (result as com.example.data.dto.Result.Error).error.message)
     }
 }

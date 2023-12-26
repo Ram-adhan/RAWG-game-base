@@ -1,6 +1,5 @@
-package com.example.rawggamebase.data
+package com.example.data
 
-import com.example.rawggamebase.BuildConfig
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import okhttp3.OkHttpClient

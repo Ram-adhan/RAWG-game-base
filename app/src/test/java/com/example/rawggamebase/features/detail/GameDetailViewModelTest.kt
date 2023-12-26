@@ -1,13 +1,11 @@
 package com.example.rawggamebase.features.detail
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.rawggamebase.data.GameRepository
-import com.example.rawggamebase.data.dto.AddedByStatus
-import com.example.rawggamebase.data.dto.Developer
-import com.example.rawggamebase.data.dto.GameDetail
-import com.example.rawggamebase.data.dto.Result
-import com.example.rawggamebase.features.main.MainViewModel
-import com.example.rawggamebase.features.model.GameModel
+import com.example.data.GameRepository
+import com.example.data.dto.AddedByStatus
+import com.example.data.dto.Developer
+import com.example.data.dto.GameDetail
+import com.example.data.dto.Result
 import com.example.rawggamebase.utils.UiState
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -35,7 +33,7 @@ import org.junit.rules.TestRule
 @OptIn(ExperimentalCoroutinesApi::class)
 class GameDetailViewModelTest {
     private lateinit var viewModel: GameDetailViewModel
-    private val gameRepo: GameRepository = mockk(relaxed = true)
+    private val gameRepo: com.example.data.GameRepository = mockk(relaxed = true)
     private val dispatcher: TestDispatcher = UnconfinedTestDispatcher()
     private lateinit var uiState: MutableList<UiState<GameDetailModel>>
 
@@ -58,7 +56,7 @@ class GameDetailViewModelTest {
     @Test
     fun `get detail game and return success`() = runTest {
         val id = 1
-        val gameDetail = GameDetail(
+        val gameDetail = com.example.data.dto.GameDetail(
             id = 1,
             name = "Game name",
             descriptionRaw = "descriptionRaw",
@@ -66,9 +64,9 @@ class GameDetailViewModelTest {
             backgroundImage = "background Image",
             released = "13-13-2020",
             developers = listOf(
-                Developer(id = 2, name = "Developer game")
+                com.example.data.dto.Developer(id = 2, name = "Developer game")
             ),
-            addedByStatus = AddedByStatus(
+            addedByStatus = com.example.data.dto.AddedByStatus(
                 yet = 10,
                 owned = 10,
                 beaten = 10,
@@ -81,7 +79,7 @@ class GameDetailViewModelTest {
             gameRepo.getGameDetail(any())
         } coAnswers {
             delay(10)
-            Result.Success(gameDetail)
+            com.example.data.dto.Result.Success(gameDetail)
         }
 
         val job = launch {
@@ -121,7 +119,7 @@ class GameDetailViewModelTest {
             gameRepo.getGameDetail(any())
         } coAnswers {
             delay(10)
-            Result.Error(Throwable(message))
+            com.example.data.dto.Result.Error(Throwable(message))
         }
 
         val job = launch {

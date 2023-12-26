@@ -1,4 +1,4 @@
-package com.example.rawggamebase.data.dto
+package com.example.data.dto
 
 data class BaseListResponse<out T : Any>(
     val count: Int = 0,
