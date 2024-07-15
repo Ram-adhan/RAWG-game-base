@@ -1,0 +1,17 @@
+
+kover {
+    reports {
+        filters {
+            includes{
+                classes(
+                        "*ViewModel",
+                )
+            }
+        }
+        verify {
+            rule {
+                minBound(70)
+            }
+        }
+    }
+}

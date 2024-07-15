@@ -1,7 +1,10 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlinx.kover'
 }
+
+apply from:'../kover.gradle'
 
 android {
     compileSdk 33
@@ -33,6 +36,7 @@ android {
     buildFeatures {
         viewBinding true
     }
+    namespace 'com.example.rawggamebase'
 }
 
 dependencies {
