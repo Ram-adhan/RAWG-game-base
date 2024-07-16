@@ -50,10 +50,10 @@ class GameRepositoryTest {
         }
 
         assert(result is Result.Success)
-        /*assertEquals(
+        assertEquals(
             Result.Success(listGame).data,
             (result as Result.Success).data
-        )*/
+        )
     }
 
     @Test
