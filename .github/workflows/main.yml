@@ -17,17 +17,12 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
       - name: Generate kover coverage report
         run: ./gradlew koverXmlReport
-      - name: Upload Coverage to CodeCov
-        uses: codecov/codecov-action@v2
-        with:
-          files: ./build/reports/kover/xmlReport.xml
-          fail_ci_if_error: true
       - name: Add coverage report to PR
         id: kover
         uses: mi-kas/kover-report@v1.9
         with:
           path: |
-            ${{ github.workspace }}/app/build/reports/kover/report.xml
+            ./app/build/reports/kover/report.xml
           title: Code Coverage
           update-comment: true
           min-coverage-overall: 80
