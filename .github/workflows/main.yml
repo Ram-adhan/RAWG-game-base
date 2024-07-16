@@ -3,9 +3,9 @@ bashCopy code
       run: ./gradlew koverXmlReportDebug
 
     - name: Add coverage report to PR
-      uses: mi-kas/kover-report@v1
+      uses: mi-kas/kover-report@v1.9
       with:
-        path: $Add your path to your work space
+        path: app/build/reports/kover/reportDebug.xml
         title: Code Coverage
         update-comment: true
         min-coverage-overall: 32
